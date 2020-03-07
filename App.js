@@ -23,12 +23,15 @@ import DeckView from './pages/DeckView';
 import NewDeckView from './pages/NewDeckView';
 import QuizView from './pages/QuizView';
 import NewQuestionView from './pages/NewQuestionView';
-import { clearAsyncStorage } from './utils/helpers';
+import { setLocalNotification } from './utils/helpers';
 
 const DeckListStack = createStackNavigator();
 const TabNavigator = createMaterialTopTabNavigator();
 
 export default class App extends React.Component {
+	componentDidMount() {
+		setLocalNotification();
+	}
 	render() {
 		return (
 			<Provider store={createStore(reducer)}>

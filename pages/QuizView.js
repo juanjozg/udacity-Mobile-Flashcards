@@ -33,7 +33,7 @@ class QuizView extends Component {
 		});
 	}
 	render() {
-		const { cards } = this.props;
+		const { cards, deckId } = this.props;
 		const { showQuestion, indexOfCardPlaying } = this.state;
 
 		if (cards.length === 0) {
@@ -49,6 +49,26 @@ class QuizView extends Component {
 					<Text>
 						{this.state.numCorrectAns} out of {cards.length}
 					</Text>
+					<TouchableOpacity
+						style={styles.btnCorrect}
+						onPress={() =>
+							this.setState({
+								showQuestion: true,
+								indexOfCardPlaying: 0,
+								numCorrectAns: 0
+							})
+						}
+					>
+						<Text style={styles.textSubmit}>Restart Quiz</Text>
+					</TouchableOpacity>
+					<TouchableOpacity
+						style={styles.btnCorrect}
+						onPress={() =>
+							this.props.navigation.navigate('DeckView', { deckId })
+						}
+					>
+						<Text style={styles.textSubmit}>Back to Deck</Text>
+					</TouchableOpacity>
 				</View>
 			);
 		}
@@ -161,6 +181,7 @@ const mapStateToProps = (decks, { route }) => {
 	const deck = decks[deckId];
 
 	return {
+		deckId: deckId,
 		cards: deck.questions
 	};
 };

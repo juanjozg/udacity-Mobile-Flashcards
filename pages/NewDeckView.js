@@ -1,5 +1,12 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput, StyleSheet, Platform } from 'react-native';
+import {
+	View,
+	Text,
+	TextInput,
+	StyleSheet,
+	Platform,
+	Alert
+} from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { addDeck } from '../actions';
@@ -11,12 +18,41 @@ class NewDeckView extends Component {
 	static propTypes = {
 		prop: PropTypes.any
 	};
-	state = { newDeckTitle: '' };
+	state = { newDeckTitle: '', submitted: false };
+	handleSubmitDeck() {
+		const { newDeckTitle } = this.state;
+		if (newDeckTitle === '') {
+			this.setState({ submitted: true });
+			return;
+		}
+		if (this.props.decks[newDeckTitle]) {
+			Alert.alert(
+				`New Deck - "${newDeckTitle}"`,
+				'There is already a deck with that name. Do you want to override it?',
+				[
+					{
+						text: 'No way',
+						onPress: () =>
+							this.setState({
+								newDeckTitle: ''
+							}),
+						style: 'cancel'
+					},
+					{ text: 'Yes', onPress: () => this.submitDeck() }
+				],
+				{ cancelable: false }
+			);
+		} else {
+			this.submitDeck();
+		}
+	}
+
 	submitDeck() {
 		const { newDeckTitle } = this.state;
 		this.props.dispatch(addDeck(newDeckTitle));
 		this.setState({
-			newDeckTitle: ''
+			newDeckTitle: '',
+			submitted: false
 		});
 		this.props.navigation.reset({
 			index: 0,
@@ -55,9 +91,14 @@ class NewDeckView extends Component {
 						value={this.state.newDeckTitle}
 						underlineColorAndroid={'#ff2e51'}
 					></TextInput>
+					{this.state.submitted && this.state.newDeckTitle === '' ? (
+						<Text style={{ color: '#ff2e51', fontSize: 12, paddingLeft: 6 }}>
+							That's not a valid name for a deck!
+						</Text>
+					) : null}
 				</View>
 				<CustomButton
-					onPress={() => this.submitDeck()}
+					onPress={() => this.handleSubmitDeck()}
 					title='Submit'
 				></CustomButton>
 			</View>
@@ -105,7 +146,11 @@ const styles = StyleSheet.create({
 	}
 });
 
-const mapStateToProps = (state) => ({});
+const mapStateToProps = (decks) => {
+	return {
+		decks
+	};
+};
 
 const mapDispatchToProps = {};
 

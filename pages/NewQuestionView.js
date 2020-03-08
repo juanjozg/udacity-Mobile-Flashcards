@@ -18,15 +18,27 @@ class NewQuestionView extends Component {
 
 	state = {
 		question: '',
-		answer: ''
+		answer: '',
+		submitted: false
 	};
-
+	handleSubmitCardToDeck() {
+		if (this.state.question === '' || this.state.answer === '') {
+			this.setState({ submitted: true });
+			return;
+		}
+		this.addCardToDeck();
+	}
 	addCardToDeck() {
 		const { deckId } = this.props;
 		const card = {
 			question: this.state.question,
 			answer: this.state.answer
 		};
+		this.setState({
+			question: '',
+			answer: '',
+			submitted: false
+		});
 		this.props.dispatch(addCard(deckId, card));
 		this.props.navigation.goBack();
 	}
@@ -47,6 +59,11 @@ class NewQuestionView extends Component {
 						value={this.state.question}
 						underlineColorAndroid={'#ff2e51'}
 					></TextInput>
+					{this.state.submitted && this.state.question === '' ? (
+						<Text style={{ color: '#ff2e51', fontSize: 12, paddingLeft: 6 }}>
+							That's not a valid question!
+						</Text>
+					) : null}
 					<Text style={[styles.label, { marginTop: 15 }]}>
 						and here goes the answer
 					</Text>
@@ -56,9 +73,14 @@ class NewQuestionView extends Component {
 						value={this.state.answer}
 						underlineColorAndroid={'#ff2e51'}
 					></TextInput>
+					{this.state.submitted && this.state.answer === '' ? (
+						<Text style={{ color: '#ff2e51', fontSize: 12, paddingLeft: 6 }}>
+							That's not a valid answer!
+						</Text>
+					) : null}
 				</View>
 				<CustomButton
-					onPress={() => this.addCardToDeck()}
+					onPress={() => this.handleSubmitCardToDeck()}
 					title='Submit'
 				></CustomButton>
 			</View>

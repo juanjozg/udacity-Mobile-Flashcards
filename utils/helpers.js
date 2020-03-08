@@ -31,7 +31,7 @@ function createNotification() {
 	};
 }
 
-export function setLocalNotification() {
+export function setLocalNotification(day) {
 	AsyncStorage.getItem(NOTIFICATION_KEY)
 		.then(JSON.parse)
 		.then((data) => {
@@ -40,9 +40,13 @@ export function setLocalNotification() {
 					if (status === 'granted') {
 						Notifications.cancelAllScheduledNotificationsAsync();
 						let tomorrow = new Date();
-						tomorrow.setDate(tomorrow.getDate());
-						tomorrow.setHours(23);
-						tomorrow.setMinutes(5);
+						if (day === 'today') {
+							tomorrow.setDate(tomorrow.getDate());
+						} else {
+							tomorrow.setDate(tomorrow.getDate() + 1);
+						}
+						tomorrow.setHours(18);
+						tomorrow.setMinutes(0);
 						Notifications.scheduleLocalNotificationAsync(createNotification(), {
 							time: tomorrow,
 							repeat: 'day'

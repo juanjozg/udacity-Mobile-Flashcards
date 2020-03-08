@@ -5,10 +5,19 @@ import { connect } from 'react-redux';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { CustomButton } from '../components/CustomButton';
 import { Ionicons } from '@expo/vector-icons';
+import { clearLocalNotification } from '../utils/helpers';
 class DeckView extends Component {
 	static propTypes = {
 		prop: PropTypes.any
 	};
+
+	startQuiz() {
+		clearLocalNotification();
+		setLocalNotification('tomorrow');
+		this.props.navigation.navigate('QuizView', {
+			deckId: deck.title
+		});
+	}
 
 	render() {
 		const { deck } = this.props;
@@ -37,11 +46,7 @@ class DeckView extends Component {
 					</CustomButton>
 				</View>
 				<CustomButton
-					onPress={() =>
-						this.props.navigation.navigate('QuizView', {
-							deckId: deck.title
-						})
-					}
+					onPress={() => this.startQuiz()}
 					title='Start Quiz'
 				></CustomButton>
 			</View>

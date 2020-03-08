@@ -30,7 +30,7 @@ const TabNavigator = createMaterialTopTabNavigator();
 
 export default class App extends React.Component {
 	componentDidMount() {
-		setLocalNotification();
+		setLocalNotification('today');
 	}
 	render() {
 		return (

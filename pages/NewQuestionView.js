@@ -9,6 +9,7 @@ import {
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { addCard } from '../actions';
+import { CustomButton } from '../components/CustomButton';
 
 class NewQuestionView extends Component {
 	static propTypes = {
@@ -33,24 +34,33 @@ class NewQuestionView extends Component {
 	render() {
 		return (
 			<View style={styles.container}>
-				<TextInput
-					style={styles.input}
-					placeholder='Type here your question!'
-					onChangeText={(question) => this.setState({ question })}
-					value={this.state.question}
-				></TextInput>
-				<TextInput
-					style={styles.input}
-					placeholder='Type here the answer!'
-					onChangeText={(answer) => this.setState({ answer })}
-					value={this.state.answer}
-				></TextInput>
-				<TouchableOpacity
-					style={styles.btnStartQuiz}
+				<View>
+					<Text style={styles.textHeader}>
+						Every card needs a question... and its answer!
+					</Text>
+				</View>
+				<View>
+					<Text style={styles.label}>Here goes the question</Text>
+					<TextInput
+						style={styles.input}
+						onChangeText={(question) => this.setState({ question })}
+						value={this.state.question}
+						underlineColorAndroid={'#ff2e51'}
+					></TextInput>
+					<Text style={[styles.label, { marginTop: 15 }]}>
+						and here goes the answer
+					</Text>
+					<TextInput
+						style={styles.input}
+						onChangeText={(answer) => this.setState({ answer })}
+						value={this.state.answer}
+						underlineColorAndroid={'#ff2e51'}
+					></TextInput>
+				</View>
+				<CustomButton
 					onPress={() => this.addCardToDeck()}
-				>
-					<Text style={styles.textSubmit}>Submit</Text>
-				</TouchableOpacity>
+					title='Submit'
+				></CustomButton>
 			</View>
 		);
 	}
@@ -58,33 +68,28 @@ class NewQuestionView extends Component {
 
 const styles = StyleSheet.create({
 	container: {
-		justifyContent: 'flex-start',
-		flex: 1
+		flex: 1,
+		margin: 15,
+		justifyContent: 'space-around',
+		textAlign: 'center'
+	},
+	textHeader: {
+		fontSize: 24,
+		textAlign: 'left',
+		fontWeight: '300',
+		textAlign: 'center',
+		color: '#232c39'
+	},
+	label: {
+		fontSize: 16,
+		fontWeight: '300',
+		textAlign: 'center',
+		color: '#232c39'
 	},
 	input: {
-		marginTop: 24,
-		marginBottom: 24,
-		marginLeft: 16,
-		marginRight: 16,
-		borderRadius: 5,
-		borderWidth: 1,
-		padding: 8
-	},
-	btnStartQuiz: {
-		backgroundColor: 'black',
-		marginTop: 24,
-		paddingTop: 10,
-		paddingBottom: 10,
-		paddingRight: 38,
-		paddingLeft: 38,
-		borderRadius: 5,
-		borderWidth: 1,
-		borderColor: 'black',
-		alignSelf: 'center'
-	},
-	textSubmit: {
-		color: 'white',
-		fontSize: 18
+		height: 40,
+		paddingLeft: 6,
+		color: '#232c39'
 	}
 });
 

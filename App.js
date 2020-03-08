@@ -49,36 +49,39 @@ export default class App extends React.Component {
 							name='DeckView'
 							component={DeckView}
 							options={{
+								labelStyle: { fontSize: 16, fontWeight: 'bold' },
 								headerStatusBarHeight: 0,
-								headerTintColor: 'white',
+								headerTintColor: '#f7f7f7',
 								headerStyle: {
-									backgroundColor: 'black'
+									backgroundColor: '#232c39'
 								},
-								title: 'udacicards'
+								title: 'deck'
 							}}
 						/>
 						<DeckListStack.Screen
 							name='NewQuestionView'
 							component={NewQuestionView}
 							options={{
+								labelStyle: { fontSize: 16, fontWeight: 'bold' },
 								headerStatusBarHeight: 0,
-								headerTintColor: 'white',
+								headerTintColor: '#f7f7f7',
 								headerStyle: {
-									backgroundColor: 'black'
+									backgroundColor: '#232c39'
 								},
-								title: 'Add Card'
+								title: 'add card'
 							}}
 						/>
 						<DeckListStack.Screen
 							name='QuizView'
 							component={QuizView}
 							options={{
+								labelStyle: { fontSize: 16, fontWeight: 'bold' },
 								headerStatusBarHeight: 0,
-								headerTintColor: 'white',
+								headerTintColor: '#f7f7f7',
 								headerStyle: {
-									backgroundColor: 'black'
+									backgroundColor: '#232c39'
 								},
-								title: 'Quiz'
+								title: 'quiz'
 							}}
 						/>
 					</DeckListStack.Navigator>
@@ -90,18 +93,17 @@ export default class App extends React.Component {
 
 const TabView = () => {
 	return (
-		<TabNavigator.Navigator>
+		<TabNavigator.Navigator
+			backBehavior='none'
+			tabBarOptions={{
+				labelStyle: { fontSize: 16, fontWeight: 'bold' },
+				activeTintColor: '#f7f7f7',
+				indicatorStyle: { backgroundColor: '#ff2e51' },
+				style: { backgroundColor: '#232c39' }
+			}}
+		>
 			<TabNavigator.Screen name='Decks' component={DeckListView} />
-			<TabNavigator.Screen name='New Deck' component={NewDeckView} />
+			<TabNavigator.Screen name='New' component={NewDeckView} />
 		</TabNavigator.Navigator>
 	);
 };
-
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		backgroundColor: '#fff',
-		alignItems: 'center',
-		justifyContent: 'center'
-	}
-});

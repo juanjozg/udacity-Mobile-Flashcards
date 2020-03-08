@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { CustomButton } from '../components/CustomButton';
 
 class QuizView extends Component {
 	static propTypes = {
@@ -35,80 +36,114 @@ class QuizView extends Component {
 	render() {
 		const { cards, deckId } = this.props;
 		const { showQuestion, indexOfCardPlaying } = this.state;
-
+		const messageBack = `Go back to "${deckId}"`;
 		if (cards.length === 0) {
 			return (
-				<View>
-					<Text>You need to add atleast 1 card to play a deck!</Text>
+				<View style={styles.container}>
+					<View style={styles.card}>
+						<Text style={styles.textNoCards}>
+							You need to add atleast 1 card to play!
+						</Text>
+					</View>
 				</View>
 			);
 		} else if (indexOfCardPlaying === cards.length) {
 			return (
-				<View>
-					<Text>Completed!</Text>
-					<Text>
-						{this.state.numCorrectAns} out of {cards.length}
-					</Text>
-					<TouchableOpacity
-						style={styles.btnCorrect}
-						onPress={() =>
-							this.setState({
-								showQuestion: true,
-								indexOfCardPlaying: 0,
-								numCorrectAns: 0
-							})
-						}
-					>
-						<Text style={styles.textSubmit}>Restart Quiz</Text>
-					</TouchableOpacity>
-					<TouchableOpacity
-						style={styles.btnCorrect}
-						onPress={() =>
-							this.props.navigation.navigate('DeckView', { deckId })
-						}
-					>
-						<Text style={styles.textSubmit}>Back to Deck</Text>
-					</TouchableOpacity>
+				<View style={styles.container}>
+					<View style={styles.card}>
+						<Text style={styles.textCompleted}>
+							Quiz of "{deckId}" completed!
+						</Text>
+						<Text style={styles.textScore}>
+							Score:{' '}
+							<Text style={{ fontWeight: 'bold' }}>
+								{this.state.numCorrectAns}
+							</Text>{' '}
+							out of <Text style={{ fontWeight: 'bold' }}>{cards.length}</Text>
+						</Text>
+					</View>
+					<View>
+						<CustomButton
+							style={{ marginBottom: 20, backgroundColor: '#232c39' }}
+							onPress={() =>
+								this.setState({
+									showQuestion: true,
+									indexOfCardPlaying: 0,
+									numCorrectAns: 0
+								})
+							}
+							title='Restart Quiz'
+						></CustomButton>
+						<CustomButton
+							onPress={() =>
+								this.props.navigation.navigate('DeckView', { deckId })
+							}
+							title={messageBack}
+						></CustomButton>
+					</View>
 				</View>
 			);
 		}
 
 		return (
 			<View style={styles.container}>
-				<Text style={styles.numberOfCards}>
-					{indexOfCardPlaying + 1}/{cards.length}
-				</Text>
-				{showQuestion ? (
-					<Text style={styles.textHeader}>
-						{cards[indexOfCardPlaying].question}
+				<View style={styles.statsContainer}>
+					<Text style={styles.numberOfCards}>
+						Card playing: #{indexOfCardPlaying + 1}
 					</Text>
-				) : (
-					<Text style={styles.textHeader}>
-						{cards[indexOfCardPlaying].answer}
+					<Text style={styles.numberOfCards}>
+						Number of cards in deck: {cards.length}
 					</Text>
-				)}
-				<TouchableOpacity
-					onPress={() => this.setState({ showQuestion: !showQuestion })}
-				>
+				</View>
+				<View style={styles.cardContainer}>
 					{showQuestion ? (
-						<Text style={styles.textAnswer}>Answer</Text>
+						<View
+							style={[
+								styles.card,
+								{
+									backgroundColor: showQuestion ? '#f7f7f7' : '#232c39'
+								}
+							]}
+						>
+							<Text style={[styles.textQuestion]}>
+								{cards[indexOfCardPlaying].question}
+							</Text>
+							<TouchableOpacity
+								onPress={() => this.setState({ showQuestion: !showQuestion })}
+							>
+								<Text style={styles.textReveal}>see the answer...</Text>
+							</TouchableOpacity>
+						</View>
 					) : (
-						<Text style={styles.textAnswer}>Question</Text>
+						<View
+							style={[
+								styles.card,
+								{
+									backgroundColor: showQuestion ? '#f7f7f7' : '#232c39'
+								}
+							]}
+						>
+							<Text style={[styles.textAnswer]}>
+								{cards[indexOfCardPlaying].answer}
+							</Text>
+							<TouchableOpacity
+								onPress={() => this.setState({ showQuestion: !showQuestion })}
+							>
+								<Text style={styles.textReveal}>go back to the question</Text>
+							</TouchableOpacity>
+						</View>
 					)}
-				</TouchableOpacity>
-				<View style={styles.btnContainer}>
-					<TouchableOpacity
-						style={styles.btnCorrect}
-						onPress={() => this.handleCorrectAnswer(indexOfCardPlaying)}
-					>
-						<Text style={styles.textSubmit}>Correct</Text>
-					</TouchableOpacity>
-					<TouchableOpacity
-						style={styles.btnIncorrect}
-						onPress={() => this.handleIncorrectAnswer(indexOfCardPlaying)}
-					>
-						<Text style={styles.textSubmit}>Incorrect</Text>
-					</TouchableOpacity>
+					<View>
+						<CustomButton
+							style={{ marginBottom: 20, backgroundColor: '#232c39' }}
+							onPress={() => this.handleCorrectAnswer(indexOfCardPlaying)}
+							title='Correct'
+						></CustomButton>
+						<CustomButton
+							onPress={() => this.handleIncorrectAnswer(indexOfCardPlaying)}
+							title='Incorrect'
+						></CustomButton>
+					</View>
 				</View>
 			</View>
 		);
@@ -117,62 +152,76 @@ class QuizView extends Component {
 
 const styles = StyleSheet.create({
 	container: {
-		justifyContent: 'flex-start',
-		flex: 1
+		flex: 1,
+		margin: 15
+	},
+	statsContainer: {
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		alignItems: 'center'
 	},
 	numberOfCards: {
-		fontSize: 16,
-		margin: 16
-	},
-	textHeader: {
-		fontSize: 48,
-		textAlign: 'center',
-		margin: 24
-	},
-	input: {
-		marginTop: 24,
-		marginBottom: 24,
-		marginLeft: 16,
-		marginRight: 16,
-		borderRadius: 5,
-		borderWidth: 1,
-		padding: 8
-	},
-	textAnswer: {
-		color: 'darkred',
-		fontSize: 24,
+		fontSize: 12,
+		color: '#232c39',
 		fontWeight: 'bold',
+		textAlign: 'right'
+	},
+	cardContainer: {
+		flex: 1,
 		textAlign: 'center'
 	},
-	btnContainer: {
-		flexDirection: 'column',
+	card: {
+		borderRadius: 8,
+		borderWidth: 2,
+		borderColor: '#232c39',
+		flex: 1,
+		marginTop: 12,
+		marginBottom: 20,
 		justifyContent: 'center',
-		alignItems: 'stretch',
-		marginRight: 96,
-		marginLeft: 96
+		flex: 1,
+		padding: 10
 	},
-	btnCorrect: {
-		backgroundColor: 'green',
-		marginTop: 24,
-		paddingTop: 10,
-		paddingBottom: 10,
-		paddingRight: 38,
-		paddingLeft: 38,
-		borderRadius: 5
-	},
-	btnIncorrect: {
-		backgroundColor: 'red',
-		marginTop: 24,
-		paddingTop: 10,
-		paddingBottom: 10,
-		paddingRight: 38,
-		paddingLeft: 38,
-		borderRadius: 5
-	},
-	textSubmit: {
-		color: 'white',
+	textQuestion: {
+		fontSize: 24,
+		textAlign: 'left',
+		marginBottom: 16,
 		textAlign: 'center',
-		fontSize: 18
+		color: '#232c39'
+	},
+	textAnswer: {
+		fontSize: 24,
+		textAlign: 'left',
+		marginBottom: 16,
+		textAlign: 'center',
+		color: '#f7f7f7'
+	},
+	textReveal: {
+		fontSize: 16,
+		textAlign: 'left',
+		marginBottom: 16,
+		textAlign: 'center',
+		color: '#ff2e51'
+	},
+	textCompleted: {
+		fontSize: 38,
+		textAlign: 'left',
+		marginBottom: 16,
+		textAlign: 'center',
+		color: '#232c39'
+	},
+	textScore: {
+		fontSize: 16,
+		textAlign: 'left',
+		marginBottom: 16,
+		textAlign: 'center',
+		color: '#232c39'
+	},
+	textNoCards: {
+		fontSize: 24,
+		textAlign: 'left',
+		marginBottom: 16,
+		textAlign: 'center',
+		color: '#232c39'
 	}
 });
 
@@ -185,7 +234,5 @@ const mapStateToProps = (decks, { route }) => {
 		cards: deck.questions
 	};
 };
-
-const mapDispatchToProps = {};
 
 export default connect(mapStateToProps)(QuizView);

@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Platform } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-
+import { CustomButton } from '../components/CustomButton';
+import { Ionicons } from '@expo/vector-icons';
 class DeckView extends Component {
 	static propTypes = {
 		prop: PropTypes.any
@@ -13,35 +14,36 @@ class DeckView extends Component {
 		const { deck } = this.props;
 		return (
 			<View style={styles.container}>
-				<View style={styles.textContainer}>
+				<View style={{ justifyContent: 'space-between', alignItems: 'center' }}>
 					<Text style={styles.title}>{deck.title}</Text>
 					<Text style={styles.subtitle}>
 						{deck.questions.length} card
 						{deck.questions.length === 1 ? '' : 's'}
 					</Text>
-				</View>
-				<View style={styles.buttonsContainer}>
-					<TouchableOpacity
+					<CustomButton
 						onPress={() =>
 							this.props.navigation.navigate('NewQuestionView', {
 								deckId: deck.title
 							})
 						}
-						style={styles.btnAdd}
+						title='Add Card'
+						style={{ width: 150 }}
 					>
-						<Text style={styles.textAdd}>Add Card</Text>
-					</TouchableOpacity>
-					<TouchableOpacity
-						onPress={() =>
-							this.props.navigation.navigate('QuizView', {
-								deckId: deck.title
-							})
-						}
-						style={styles.btnQuiz}
-					>
-						<Text style={styles.textQuiz}>Start Quiz</Text>
-					</TouchableOpacity>
+						<Ionicons
+							name={Platform.OS === 'ios' ? 'ios-add' : 'md-add'}
+							size={24}
+							color={'#f7f7f7'}
+						/>
+					</CustomButton>
 				</View>
+				<CustomButton
+					onPress={() =>
+						this.props.navigation.navigate('QuizView', {
+							deckId: deck.title
+						})
+					}
+					title='Start Quiz'
+				></CustomButton>
 			</View>
 		);
 	}
@@ -50,58 +52,23 @@ class DeckView extends Component {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		alignItems: 'center',
-		justifyContent: 'center'
-	},
-	textContainer: {
-		justifyContent: 'center',
-		alignSelf: 'center',
-		flex: 1
-	},
-	buttonsContainer: {
-		justifyContent: 'center',
-		alignSelf: 'center',
-		flex: 1
+		margin: 15,
+		justifyContent: 'space-around',
+		textAlign: 'center'
 	},
 	title: {
-		fontSize: 40,
-		padding: 8
+		fontSize: 48,
+		color: '#232c39'
 	},
 	subtitle: {
 		fontSize: 24,
 		color: 'grey',
-		textAlign: 'center'
-	},
-	btnAdd: {
-		backgroundColor: 'white',
-		paddingTop: 10,
-		paddingBottom: 10,
-		paddingRight: 32,
-		paddingLeft: 32,
-		borderRadius: 5,
-		borderWidth: 1,
-		borderColor: 'black',
-		marginBottom: 8
-	},
-	btnQuiz: {
-		backgroundColor: 'black',
-		paddingTop: 10,
-		paddingBottom: 10,
-		paddingRight: 32,
-		paddingLeft: 32,
-		borderRadius: 5,
-		borderWidth: 1,
-		borderColor: 'black'
-	},
-	textAdd: {
-		fontSize: 18,
-		color: 'black'
-	},
-	textQuiz: {
-		fontSize: 18,
-		color: 'white'
+		textAlign: 'center',
+		marginTop: 5,
+		marginBottom: 25
 	}
 });
+
 const mapStateToProps = (decks, { route }) => {
 	const deckId = route.params.deckId;
 	const deck = decks[deckId];
@@ -110,6 +77,4 @@ const mapStateToProps = (decks, { route }) => {
 	};
 };
 
-const mapDispatchToProps = {};
-
-export default connect(mapStateToProps, mapDispatchToProps)(DeckView);
+export default connect(mapStateToProps)(DeckView);

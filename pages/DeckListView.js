@@ -6,13 +6,14 @@ import { View, Text, FlatList, StyleSheet, Platform } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 //Redux
 import { connect } from 'react-redux';
-import { receiveDecks, loadInitialDecksFromStorage } from '../actions';
+import { loadInitialDecksFromStorage } from '../actions';
 //API
-import { saveDeckTitle, getDecks } from '../utils/api';
+import { getDecks } from '../utils/api';
 //Helpers
 import { clearAsyncStorage } from '../utils/helpers';
 //Icons
 import { Ionicons } from '@expo/vector-icons';
+import { CustomButton } from '../components/CustomButton';
 
 class DeckListView extends Component {
 	static propTypes = {
@@ -45,24 +46,22 @@ class DeckListView extends Component {
 		const { decks } = this.props;
 		return (
 			<View style={styles.container}>
+				<CustomButton
+					iconPosition='start'
+					title='Clear Storage'
+					onPress={() => clearAsyncStorage()}
+				>
+					<Ionicons
+						name={Platform.OS === 'ios' ? 'ios-trash' : 'md-trash'}
+						size={24}
+						color={'#f7f7f7'}
+					/>
+				</CustomButton>
 				<FlatList
 					data={Object.keys(decks)}
 					renderItem={({ item }) => this.renderListCard(decks[item])}
 					keyExtractor={(deck, index) => index.toString()}
 				/>
-				<View style={styles.btnClearStorage}>
-					<Ionicons
-						name={Platform.OS === 'ios' ? 'ios-trash' : 'md-trash'}
-						size={20}
-						color={'white'}
-					/>
-					<TouchableOpacity
-						title='Clear Storage'
-						onPress={() => clearAsyncStorage()}
-					>
-						<Text style={styles.textBtnClear}>Clear storage</Text>
-					</TouchableOpacity>
-				</View>
 			</View>
 		);
 	}
@@ -71,18 +70,22 @@ class DeckListView extends Component {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		justifyContent: 'center'
+		justifyContent: 'center',
+		margin: 15
 	},
 	deck: {
 		flex: 1,
-		padding: 8,
+		padding: 16,
 		justifyContent: 'center',
 		alignItems: 'center',
-		borderBottomWidth: 0.5,
-		borderColor: '#d6d7da'
+		borderRadius: 15,
+		marginTop: 5,
+		marginBottom: 5,
+		backgroundColor: '#232c39'
 	},
 	title: {
-		fontSize: 24
+		fontSize: 24,
+		color: '#f7f7f7'
 	},
 	subtitle: {
 		fontSize: 16,
@@ -92,12 +95,12 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		alignItems: 'center',
 		justifyContent: 'center',
-		backgroundColor: 'deepskyblue',
-		color: 'white'
+		backgroundColor: '#ff2e51',
+		color: '#f7f7f7'
 	},
 	textBtnClear: {
 		fontSize: 16,
-		color: 'white',
+		color: '#f7f7f7',
 		fontWeight: '400',
 		margin: 5
 	}

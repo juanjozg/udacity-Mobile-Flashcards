@@ -12,8 +12,8 @@ class DeckView extends Component {
 	};
 
 	startQuiz() {
-		clearLocalNotification();
-		setLocalNotification('tomorrow');
+		clearLocalNotification(); //Cancel today's notification
+		setLocalNotification(); //But schedule one for tomorrow if you dont click Start Quiz
 		this.props.navigation.navigate('QuizView', {
 			deckId: deck.title
 		});

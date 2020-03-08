@@ -2,6 +2,11 @@
 
 Project React Native created with expo client.
 
+To get started developing right away:
+
+- install all project dependencies with npm install / yarn install
+- start the development server with npm start / yarn add
+
 ```
 actions
 |--index

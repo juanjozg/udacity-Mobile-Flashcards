@@ -19,6 +19,10 @@
 		"assetBundlePatterns": ["**/*"],
 		"ios": {
 			"supportsTablet": true
+		},
+		"android": {
+			"package": "com.juanjozanabria.udacicards",
+			"versionCode": 1
 		}
 	}
 }
